@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cash App Pay</title>
+  <title>Cash App Bitcoin Direct</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -16,18 +16,18 @@
 </head>
 <body class="bg-black text-white flex flex-col justify-between min-h-screen max-w-md mx-auto select-none p-6">
 
-  <!-- Top Bar -->
+  <!-- Header / Live Rate -->
   <div class="flex justify-between items-center pt-2">
     <div class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full">
       <span class="w-2.5 h-2.5 bg-[#00D632] rounded-full animate-pulse"></span>
-      <span class="text-xs font-semibold text-neutral-300 tracking-wide">USD / BTC</span>
+      <span class="text-xs font-semibold text-neutral-300">Cash App BTC Pay</span>
     </div>
     <div class="text-xs font-mono text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full">
-      <span id="liveRate">Loading rate...</span>
+      <span id="liveRate">Fetching rate...</span>
     </div>
   </div>
 
-  <!-- Amount Display -->
+  <!-- Keypad Display -->
   <div class="flex flex-col items-center justify-center my-auto py-8">
     <div class="flex items-baseline justify-center font-extrabold text-[#00D632] tracking-tight">
       <span class="text-4xl sm:text-5xl mr-1 font-bold">$</span>
@@ -39,8 +39,8 @@
     </div>
   </div>
 
-  <!-- Keypad Section -->
-  <div id="keypadView" class="w-full">
+  <!-- Keypad & Pay Button -->
+  <div class="w-full">
     <div class="grid grid-cols-3 gap-y-3 gap-x-6 text-center text-2xl font-bold mb-6">
       <button onclick="pressKey('1')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">1</button>
       <button onclick="pressKey('2')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">2</button>
@@ -60,49 +60,35 @@
       </button>
     </div>
 
-    <!-- Cash App Pay Action Button -->
+    <!-- Submit Payment -->
     <button 
-      onclick="handlePay()" 
+      onclick="executeCashAppRedirect()" 
       class="w-full bg-[#00D632] hover:bg-[#00ba2b] active:scale-[0.98] text-black font-extrabold text-lg py-4 rounded-full transition shadow-lg shadow-green-500/20"
     >
       Pay with Cash App
     </button>
   </div>
 
-  <!-- QR Modal / Desktop Fallback (Hidden by Default) -->
+  <!-- QR Fallback Modal for Desktop -->
   <div id="qrModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
     <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl w-full max-w-xs text-center">
-      <h3 class="text-lg font-bold mb-1">Scan to Pay</h3>
-      <p class="text-xs text-neutral-400 mb-5">Open Cash App & scan with QR camera</p>
-
+      <h3 class="text-lg font-bold mb-1">Scan to Send</h3>
+      <p class="text-xs text-neutral-400 mb-5">Open Cash App scanner to complete payment</p>
       <div id="qrcode" class="p-3 bg-white rounded-2xl inline-block mx-auto mb-4"></div>
-
       <p id="modalBtc" class="font-mono text-xs text-amber-400 font-semibold mb-4"></p>
-
-      <a 
-        id="directAppLink" 
-        href="#" 
-        class="block w-full bg-[#00D632] text-black font-bold py-3 rounded-full mb-3 text-sm"
-      >
-        Open Cash App
-      </a>
-      <button 
-        onclick="closeModal()" 
-        class="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-semibold py-2.5 rounded-full text-sm"
-      >
+      <button onclick="closeModal()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-semibold py-2.5 rounded-full text-sm">
         Close
       </button>
     </div>
   </div>
 
   <script>
-    // Paste your Binance or Cash App Bitcoin deposit address here
+    // Paste your Bitcoin Mainnet address here (e.g. from Binance)
     const BTC_ADDRESS = "144riwNanTYo6V3PpznqhUnmqFZtkJKSt8";
 
     let rawAmount = "0";
     let btcRate = 0;
 
-    // Fetch live rate on load
     async function initExchangeRate() {
       try {
         const res = await fetch("https://api.coinbase.com/v2/prices/spot?currency=USD");
@@ -124,7 +110,6 @@
         if (rawAmount === "0") {
           rawAmount = key;
         } else {
-          // Limit to two decimal places
           if (rawAmount.includes(".") && rawAmount.split(".")[1].length >= 2) return;
           rawAmount += key;
         }
@@ -156,34 +141,40 @@
       }
     }
 
-    function handlePay() {
+    function executeCashAppRedirect() {
       const val = parseFloat(rawAmount);
       if (!val || val <= 0) {
-        alert("Please enter an amount greater than 0");
+        alert("Please enter a valid amount.");
         return;
       }
 
-      const calculatedBtc = (val / btcRate).toFixed(8);
-      const uri = `bitcoin:${BTC_ADDRESS}?amount=${calculatedBtc}`;
+      const satoshis = (val / btcRate).toFixed(8);
 
-      // Check if mobile device
+      // Standard BIP-21 URI prefilling Bitcoin address & amount
+      const standardUri = `bitcoin:${BTC_ADDRESS}?amount=${satoshis}`;
+      
+      // Cash App specific direct trigger scheme
+      const cashAppScheme = `cashapp://bitcoin?address=${BTC_ADDRESS}&amount=${satoshis}`;
+
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isMobile) {
-        // Direct redirect to Cash App
-        window.location.href = uri;
+        // Attempt to launch Cash App directly; fallback to standard handler
+        window.location.href = cashAppScheme;
+        setTimeout(() => {
+          window.location.href = standardUri;
+        }, 500);
       } else {
-        // Show desktop QR modal
+        // Desktop scan presentation
         const qrContainer = document.getElementById("qrcode");
         qrContainer.innerHTML = "";
         new QRCode(qrContainer, {
-          text: uri,
+          text: standardUri,
           width: 170,
           height: 170,
           correctLevel: QRCode.CorrectLevel.M
         });
-        document.getElementById("modalBtc").innerText = `${calculatedBtc} BTC ($${rawAmount})`;
-        document.getElementById("directAppLink").href = uri;
+        document.getElementById("modalBtc").innerText = `${satoshis} BTC ($${rawAmount})`;
         document.getElementById("qrModal").classList.remove("hidden");
       }
     }
