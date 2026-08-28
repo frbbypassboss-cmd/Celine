@@ -1,642 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Celine | Modern Connection</title>
-    <!-- Google Fonts & Font Awesome 6 -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at 10% 30%, #faf0f2 0%, #fce4ec 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><path fill="%23FFB7C5" d="M60,70 L80,50 L100,70 L120,50 L140,70 L130,100 L140,130 L120,150 L100,130 L80,150 L60,130 L70,100 L60,70Z"/><circle cx="50" cy="160" r="8"/><circle cx="150" cy="40" r="10"/></svg>');
-            background-repeat: repeat;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .profile-card {
-            max-width: 560px;
-            width: 100%;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 2rem;
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12), 0 10px 25px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            z-index: 2;
-            border: 1px solid rgba(255, 245, 240, 0.9);
-        }
-
-        .hero-image {
-            position: relative;
-            width: 100%;
-            height: auto;
-            background: linear-gradient(145deg, #2c1a2b, #4a2c3e);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            display: block;
-            aspect-ratio: 1 / 1;
-            max-height: 380px;
-            object-position: top 20% center;
-            filter: brightness(1.02) contrast(1.05);
-        }
-
-        .badge-muse {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(8px);
-            border-radius: 40px;
-            padding: 6px 14px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(255,255,200,0.3);
-        }
-
-        .badge-muse i {
-            font-size: 0.7rem;
-            color: #ffb7c5;
-        }
-
-        .profile-content {
-            padding: 1.8rem 1.8rem 2.2rem;
-        }
-
-        .name-age {
-            display: flex;
-            align-items: baseline;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .name-age h1 {
-            font-size: 1.9rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            background: linear-gradient(135deg, #2b1a2a, #aa5e7c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .age {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #a75a78;
-            background: #fff0f3;
-            padding: 0.2rem 0.9rem;
-            border-radius: 60px;
-            line-height: 1.3;
-        }
-
-        .location-tag {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #7c5a68;
-            font-weight: 600;
-            margin: 0.6rem 0 1rem 0;
-            font-size: 0.95rem;
-            background: #fef6f8;
-            padding: 8px 18px;
-            border-radius: 60px;
-            width: fit-content;
-            flex-wrap: wrap;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
-        }
-        
-        .location-tag i {
-            font-size: 0.9rem;
-        }
-        
-        .location-text {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .location-loader {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: #b55a7a;
-        }
-        
-        .location-loader i {
-            animation: spinLoader 1s infinite linear;
-        }
-        
-        @keyframes spinLoader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .bio {
-            margin: 1.2rem 0 1.4rem;
-            color: #2d1f2a;
-            font-weight: 500;
-            line-height: 1.5;
-            font-size: 1rem;
-            border-left: 3px solid #ff9eb5;
-            padding-left: 1rem;
-        }
-
-        .interests {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 1.5rem 0 1.8rem;
-        }
-
-        .interest {
-            background: #faeef2;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #b1446a;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .interest i {
-            font-size: 0.7rem;
-            color: #e67296;
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin: 1.5rem 0 1.8rem;
-            padding: 0.8rem 0;
-            border-top: 1px solid #ffe0e8;
-            border-bottom: 1px solid #ffe0e8;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: #2b1a2a;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #b87a92;
-            font-weight: 600;
-        }
-
-        .btn-spark {
-            background: linear-gradient(105deg, #e45c7c 0%, #d43f64 100%);
-            border: none;
-            width: 100%;
-            padding: 1rem 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 60px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 12px 20px rgba(212, 63, 100, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 0.5rem;
-            font-family: inherit;
-        }
-
-        .btn-spark i {
-            font-size: 1.1rem;
-            transition: transform 0.2s;
-        }
-
-        .btn-spark:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 28px rgba(212, 63, 100, 0.35);
-            background: linear-gradient(105deg, #ea6e8b, #df3c62);
-        }
-
-        .btn-spark:active {
-            transform: translateY(1px);
-        }
-
-        .romance-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, #fff1f5 0%, #ffd9e3 100%);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.35s ease;
-            transition: opacity 0.2s;
-        }
-
-        .romance-card {
-            background: rgba(255, 255, 255, 0.96);
-            width: 86%;
-            max-width: 400px;
-            border-radius: 3rem;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            box-shadow: 0 35px 55px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 220, 200, 0.7);
-            transform: scale(0.96);
-            animation: cardPop 0.4s forwards;
-        }
-
-        @keyframes cardPop {
-            to { transform: scale(1); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .romance-card i {
-            font-size: 3.8rem;
-            color: #f25e82;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-
-        .romance-card h3 {
-            font-size: 1.9rem;
-            font-weight: 800;
-            background: linear-gradient(145deg, #b5466a, #e45c7c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.6rem;
-        }
-
-        .romance-card p {
-            color: #5a3e4a;
-            font-weight: 500;
-            margin: 0.7rem 0;
-        }
-
-        .countdown-badge {
-            background: #feeef3;
-            display: inline-block;
-            padding: 0.5rem 1.2rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #bc5e7e;
-            margin-top: 1rem;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.15); opacity: 0.9; text-shadow: 0 0 4px #ff94ae; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .fa-heartbeat {
-            animation: pulse 1.1s infinite;
-        }
-
-        @media (max-width: 480px) {
-            .profile-content { padding: 1.5rem; }
-            .name-age h1 { font-size: 1.7rem; }
-            .age { font-size: 1.2rem; }
-            .bio { font-size: 0.92rem; }
-            .btn-spark { padding: 0.85rem 0; font-size: 1rem; }
-            .location-tag { font-size: 0.8rem; padding: 5px 14px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash App Pay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-black text-white flex flex-col justify-between min-h-screen max-w-md mx-auto select-none p-6">
 
-<div class="profile-card">
-    <div class="hero-image">
-        <img src="1656721021628.jpg?auto=compress&cs=tinysrgb&w=800" 
-             alt="Celine - elegant modern woman"
-             onerror="this.src='https://randomuser.me/api/portraits/women/88.jpg'">
-        <div class="badge-muse">
-            <i class="fas fa-feather-alt"></i> muse · authentic
-        </div>
+  <!-- Top Bar -->
+  <div class="flex justify-between items-center pt-2">
+    <div class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full">
+      <span class="w-2.5 h-2.5 bg-[#00D632] rounded-full animate-pulse"></span>
+      <span class="text-xs font-semibold text-neutral-300 tracking-wide">USD / BTC</span>
     </div>
-    <div class="profile-content">
-        <div class="name-age">
-            <h1>Celine, 28</h1>
-            <div class="age">✨</div>
-        </div>
-        
-        <!-- LOCATION TAG: Will display visitor's REAL country & city -->
-        <div id="dynamicLocation" class="location-tag">
-            <i class="fas fa-map-pin"></i>
-            <span id="locationDisplay" class="location-text">
-                <span class="location-loader"><i class="fas fa-spinner fa-pulse"></i> detecting your location...</span>
-            </span>
-            <i class="fas fa-moon" style="margin-left: 2px;"></i>
-        </div>
-        
-        <div class="bio">
-            <i class="fas fa-quote-left" style="color: #e67296; font-size: 0.8rem; margin-right: 6px;"></i> 
-            I believe in genuine chemistry, late-night conversations & spontaneous adventures. 
-            If you appreciate depth and a spark of mystery, let's connect beyond the surface.
-        </div>
-        <div class="interests">
-            <span class="interest"><i class="fas fa-wine-glass-alt"></i> Art of dining</span>
-            <span class="interest"><i class="fas fa-feather"></i> Poetry</span>
-            <span class="interest"><i class="fas fa-plane"></i> Slow travel</span>
-            <span class="interest"><i class="fas fa-camera"></i> Film photography</span>
-        </div>
-        <div class="stats-row">
-            <div class="stat">
-                <div class="stat-number">14k+</div>
-                <div class="stat-label">connections</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">87%</div>
-                <div class="stat-label">vibe match</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">32</div>
-                <div class="stat-label">countries visited</div>
-            </div>
-        </div>
-        <button id="connectBtn" class="btn-spark">
-            <i class="fas fa-sparkles"></i> Meet Celine
-            <i class="fas fa-arrow-right"></i>
-        </button>
-        <p style="font-size: 0.7rem; text-align: center; margin-top: 1rem; color: #c288a0;">
-            <i class="fas fa-shield-alt"></i> genuine & verified profile
-        </p>
+    <div class="text-xs font-mono text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full">
+      <span id="liveRate">Loading rate...</span>
     </div>
-</div>
+  </div>
 
-<script>
-    (function() {
-        // ============================================================
-        // YOUR MAIN WEBSITE URL
-        const MAIN_URL = "https://tinyurl.com/celinewebsite";
-        // ============================================================
-        
-        // ---------- ROBUST VISITOR CITY & COUNTRY DETECTION ----------
-        // Using multiple APIs for redundancy - primary: ipapi.co (more reliable for city)
-        // Fallback: ip-api.com, then freegeoip.app
-        
-        const locationSpan = document.getElementById('locationDisplay');
-        const locationContainer = document.getElementById('dynamicLocation');
-        
-        function displayLocation(city, country, region = '') {
-            if (!locationSpan) return;
-            
-            let locationString = '';
-            let icon = '<i class="fas fa-location-dot" style="margin-right: 5px;"></i>';
-            
-            if (city && city !== '' && city !== 'Unknown' && city !== 'unknown') {
-                if (country && country !== '' && country !== 'Unknown' && country !== 'unknown') {
-                    locationString = `${city}, ${country}`;
-                } else {
-                    locationString = `${city}`;
-                }
-            } else if (country && country !== '' && country !== 'Unknown' && country !== 'unknown') {
-                locationString = `${country}`;
-            } else if (region && region !== '' && region !== 'Unknown') {
-                locationString = `${region}`;
-            } else {
-                // Last resort - show a generic but still honest message
-                locationString = 'your city';
-                icon = '<i class="fas fa-map-marker-alt"></i> ';
-            }
-            
-            locationSpan.innerHTML = `${icon} ${locationString}`;
-            
-            // Add a subtle visual enhancement
-            if (locationContainer && locationString !== 'your city') {
-                locationContainer.style.background = "#fff0f5";
-                locationContainer.style.border = "1px solid #ffe0e8";
-            }
+  <!-- Amount Display -->
+  <div class="flex flex-col items-center justify-center my-auto py-8">
+    <div class="flex items-baseline justify-center font-extrabold text-[#00D632] tracking-tight">
+      <span class="text-4xl sm:text-5xl mr-1 font-bold">$</span>
+      <span id="displayAmount" class="text-6xl sm:text-7xl">0</span>
+    </div>
+    <div class="mt-3 flex items-center space-x-1 bg-neutral-900/80 border border-neutral-800 px-4 py-1.5 rounded-full">
+      <span class="text-amber-400 text-sm font-bold">₿</span>
+      <span id="btcAmount" class="text-neutral-300 font-mono text-sm">0.00000000</span>
+    </div>
+  </div>
+
+  <!-- Keypad Section -->
+  <div id="keypadView" class="w-full">
+    <div class="grid grid-cols-3 gap-y-3 gap-x-6 text-center text-2xl font-bold mb-6">
+      <button onclick="pressKey('1')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">1</button>
+      <button onclick="pressKey('2')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">2</button>
+      <button onclick="pressKey('3')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">3</button>
+      <button onclick="pressKey('4')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">4</button>
+      <button onclick="pressKey('5')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">5</button>
+      <button onclick="pressKey('6')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">6</button>
+      <button onclick="pressKey('7')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">7</button>
+      <button onclick="pressKey('8')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">8</button>
+      <button onclick="pressKey('9')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">9</button>
+      <button onclick="pressKey('.')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">.</button>
+      <button onclick="pressKey('0')" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl transition">0</button>
+      <button onclick="deleteKey()" class="py-3.5 hover:bg-neutral-900 active:bg-neutral-800 rounded-2xl flex items-center justify-center transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Cash App Pay Action Button -->
+    <button 
+      onclick="handlePay()" 
+      class="w-full bg-[#00D632] hover:bg-[#00ba2b] active:scale-[0.98] text-black font-extrabold text-lg py-4 rounded-full transition shadow-lg shadow-green-500/20"
+    >
+      Pay with Cash App
+    </button>
+  </div>
+
+  <!-- QR Modal / Desktop Fallback (Hidden by Default) -->
+  <div id="qrModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
+    <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl w-full max-w-xs text-center">
+      <h3 class="text-lg font-bold mb-1">Scan to Pay</h3>
+      <p class="text-xs text-neutral-400 mb-5">Open Cash App & scan with QR camera</p>
+
+      <div id="qrcode" class="p-3 bg-white rounded-2xl inline-block mx-auto mb-4"></div>
+
+      <p id="modalBtc" class="font-mono text-xs text-amber-400 font-semibold mb-4"></p>
+
+      <a 
+        id="directAppLink" 
+        href="#" 
+        class="block w-full bg-[#00D632] text-black font-bold py-3 rounded-full mb-3 text-sm"
+      >
+        Open Cash App
+      </a>
+      <button 
+        onclick="closeModal()" 
+        class="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-semibold py-2.5 rounded-full text-sm"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Paste your Binance or Cash App Bitcoin deposit address here
+    const BTC_ADDRESS = "144riwNanTYo6V3PpznqhUnmqFZtkJKSt8";
+
+    let rawAmount = "0";
+    let btcRate = 0;
+
+    // Fetch live rate on load
+    async function initExchangeRate() {
+      try {
+        const res = await fetch("https://api.coinbase.com/v2/prices/spot?currency=USD");
+        const json = await res.json();
+        btcRate = parseFloat(json.data.amount);
+        document.getElementById("liveRate").innerText = `$${btcRate.toLocaleString()}`;
+        updateConversion();
+      } catch (err) {
+        document.getElementById("liveRate").innerText = "Rate unavailable";
+      }
+    }
+    initExchangeRate();
+
+    function pressKey(key) {
+      if (key === ".") {
+        if (rawAmount.includes(".")) return;
+        rawAmount += ".";
+      } else {
+        if (rawAmount === "0") {
+          rawAmount = key;
+        } else {
+          // Limit to two decimal places
+          if (rawAmount.includes(".") && rawAmount.split(".")[1].length >= 2) return;
+          rawAmount += key;
         }
-        
-        function showLocationError() {
-            if (!locationSpan) return;
-            // Instead of fake message, try one more time with alternative method
-            locationSpan.innerHTML = '<i class="fas fa-map-marker-alt"></i> <span id="retryLocation" style="cursor:pointer; text-decoration:underline;">tap to detect city</span>';
-            const retrySpan = document.getElementById('retryLocation');
-            if (retrySpan) {
-                retrySpan.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    locationSpan.innerHTML = '<span class="location-loader"><i class="fas fa-spinner fa-pulse"></i> detecting...</span>';
-                    detectLocationWithMultipleAPIs();
-                });
-            }
-        }
-        
-        // Primary detection using ipapi.co (gives city, region, country - very reliable)
-        function detectLocationWithMultipleAPIs() {
-            // Try ipapi.co first (requires no API key, high reliability)
-            fetch('https://ipapi.co/json/', {
-                signal: AbortSignal.timeout(5000)
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('ipapi failed');
-                return response.json();
-            })
-            .then(data => {
-                if (data && (data.city || data.country_name)) {
-                    const city = data.city || '';
-                    const country = data.country_name || '';
-                    const region = data.region || '';
-                    displayLocation(city, country, region);
-                    return; // Success, exit
-                } else {
-                    throw new Error('No location data');
-                }
-            })
-            .catch(() => {
-                // Fallback to ip-api.com
-                fetch('https://ip-api.com/json/?fields=status,country,city,regionName', {
-                    signal: AbortSignal.timeout(5000)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.status === 'success') {
-                        const city = data.city || '';
-                        const country = data.country || '';
-                        const region = data.regionName || '';
-                        displayLocation(city, country, region);
-                    } else {
-                        throw new Error('ip-api failed');
-                    }
-                })
-                .catch(() => {
-                    // Final fallback: try freegeoip.app
-                    fetch('https://freegeoip.app/json/', {
-                        signal: AbortSignal.timeout(5000)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && (data.city || data.country_name)) {
-                            const city = data.city || '';
-                            const country = data.country_name || '';
-                            const region = data.region_name || '';
-                            displayLocation(city, country, region);
-                        } else {
-                            throw new Error('All APIs failed');
-                        }
-                    })
-                    .catch(() => {
-                        // Last resort: use browser's geolocation (with permission)
-                        if (navigator.geolocation) {
-                            locationSpan.innerHTML = '<span class="location-loader"><i class="fas fa-spinner fa-pulse"></i> requesting permission...</span>';
-                            navigator.geolocation.getCurrentPosition(
-                                async (position) => {
-                                    const { latitude, longitude } = position.coords;
-                                    try {
-                                        const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-                                        const geoData = await geoRes.json();
-                                        if (geoData && geoData.city) {
-                                            const city = geoData.city || '';
-                                            const country = geoData.countryName || '';
-                                            displayLocation(city, country);
-                                        } else {
-                                            showLocationError();
-                                        }
-                                    } catch {
-                                        showLocationError();
-                                    }
-                                },
-                                () => {
-                                    showLocationError();
-                                }
-                            );
-                        } else {
-                            showLocationError();
-                        }
-                    });
-                });
-            });
-        }
-        
-        // Start detection immediately
-        detectLocationWithMultipleAPIs();
-        
-        // ---------- 2. BUTTON CLICK: 2 SEC DATING PAGE THEN REDIRECT ----------
-        const connectButton = document.getElementById('connectBtn');
-        let activeTransition = false;
-        
-        function showDatingOverlayAndRedirect() {
-            if (document.querySelector('.romance-overlay')) return;
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'romance-overlay';
-            overlay.innerHTML = `
-                <div class="romance-card">
-                    <i class="fas fa-heartbeat fa-fw"></i>
-                    <h3>✨ the connection ✨</h3>
-                    <p><i class="fas fa-comment-dots"></i> "A subtle glance, a hidden whisper... Celine is waiting for someone real."</p>
-                    <p style="font-size: 0.9rem;">unveiling a magical space</p>
-                    <div class="countdown-badge">
-                        <i class="fas fa-hourglass-half"></i> <span id="countdownTimer">2</span> seconds
-                    </div>
-                    <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.7;"><i class="fas fa-lock"></i> private rendez-vous</p>
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            document.body.style.overflow = 'hidden';
-            
-            let secondsLeft = 2;
-            const countdownSpan = overlay.querySelector('#countdownTimer');
-            
-            const interval = setInterval(() => {
-                secondsLeft--;
-                if (countdownSpan) countdownSpan.innerText = secondsLeft;
-                if (secondsLeft <= 0) {
-                    clearInterval(interval);
-                    overlay.style.opacity = '0';
-                    setTimeout(() => {
-                        if (overlay && overlay.parentNode) overlay.remove();
-                        document.body.style.overflow = '';
-                        window.location.href = MAIN_URL;
-                    }, 180);
-                }
-            }, 1000);
-            
-            setTimeout(() => {
-                if (document.body.contains(overlay)) {
-                    clearInterval(interval);
-                    if (overlay.parentNode) overlay.remove();
-                    document.body.style.overflow = '';
-                    window.location.href = MAIN_URL;
-                }
-            }, 2600);
-        }
-        
-        if (connectButton) {
-            connectButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (activeTransition) return;
-                activeTransition = true;
-                
-                connectButton.style.transform = 'scale(0.97)';
-                setTimeout(() => {
-                    if (connectButton) connectButton.style.transform = '';
-                }, 120);
-                
-                showDatingOverlayAndRedirect();
-                
-                setTimeout(() => {
-                    activeTransition = false;
-                }, 500);
-            });
-            connectButton.style.touchAction = 'manipulation';
-        }
-        
-        // Add a small debug to console (for verification, not visible to user)
-        console.log("Location detection active - will show visitor's real city and country");
-    })();
-</script>
+      }
+      renderDisplay();
+    }
+
+    function deleteKey() {
+      if (rawAmount.length <= 1) {
+        rawAmount = "0";
+      } else {
+        rawAmount = rawAmount.slice(0, -1);
+      }
+      renderDisplay();
+    }
+
+    function renderDisplay() {
+      document.getElementById("displayAmount").innerText = rawAmount;
+      updateConversion();
+    }
+
+    function updateConversion() {
+      const val = parseFloat(rawAmount);
+      if (val > 0 && btcRate > 0) {
+        const satoshis = (val / btcRate).toFixed(8);
+        document.getElementById("btcAmount").innerText = satoshis;
+      } else {
+        document.getElementById("btcAmount").innerText = "0.00000000";
+      }
+    }
+
+    function handlePay() {
+      const val = parseFloat(rawAmount);
+      if (!val || val <= 0) {
+        alert("Please enter an amount greater than 0");
+        return;
+      }
+
+      const calculatedBtc = (val / btcRate).toFixed(8);
+      const uri = `bitcoin:${BTC_ADDRESS}?amount=${calculatedBtc}`;
+
+      // Check if mobile device
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // Direct redirect to Cash App
+        window.location.href = uri;
+      } else {
+        // Show desktop QR modal
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: uri,
+          width: 170,
+          height: 170,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        document.getElementById("modalBtc").innerText = `${calculatedBtc} BTC ($${rawAmount})`;
+        document.getElementById("directAppLink").href = uri;
+        document.getElementById("qrModal").classList.remove("hidden");
+      }
+    }
+
+    function closeModal() {
+      document.getElementById("qrModal").classList.add("hidden");
+    }
+  </script>
 </body>
 </html>
